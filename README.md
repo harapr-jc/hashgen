@@ -6,8 +6,14 @@ A package (hashgen) that supplies a crypto hash server and utilties for reuse.
 
 ## Dependencies
 
-Supports Linux.
-Depends on Go standard library and OS commands uuidgen and grep.
+Linux supported. Depends on:
+
+* Go standard library
+* OS commands `uuidgen` and `grep`
+
+## Usage
+
+See project `jchash` for usage.
 
 # Development
 
@@ -77,6 +83,5 @@ store instead. The Go standard library has sql API, but no database drivers are 
 ## Outstanding Development Items
 
 * Raise code coverage
-* Add command line option for backing file
 * Add guard against running the executable twice on same machine
 * Add safety for when backing file size approaches partition size
