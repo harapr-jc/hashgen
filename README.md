@@ -77,6 +77,6 @@ store instead. The Go standard library has sql API, but no database drivers are 
 ## Outstanding Development Items
 
 * Raise code coverage
-* The LRU cache is mock, it doesn't really evict yet
 * Add command line option for backing file
 * Add guard against running the executable twice on same machine
+* Add safety for when backing file size approaches partition size

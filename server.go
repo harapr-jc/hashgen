@@ -23,8 +23,8 @@ var (
 	port       string
 	hashServer *http.Server
 	stats      Stats
-	// Evicts after 1000 entries, but all records persisted to disk
-	cache *LruCache = NewCache(1000, "backup.json")
+	// Evicts after 8192 entries, but all records persisted to disk
+	cache *LruCache = NewCache(8192, "backup.json")
 )
 
 // For monitoring shutdown request

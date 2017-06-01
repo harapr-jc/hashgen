@@ -4,6 +4,7 @@ package hashgen
 
 import (
 	"container/list"
+	"encoding/json"
 	"log"
 	"sync"
 )
@@ -29,8 +30,11 @@ type LruCache struct {
 	// Items are evicted when cache is full, can be fetched from persistent storage
 	Capacity int
 
+	// The Value of each list element will be a *UserRecord
 	linkedList *list.List
-	catalog    map[string]*UserRecord
+
+	// The Value of each list element will be a *UserRecord
+	catalog map[string]*list.Element
 
 	// Persistent storage for crypto hashes by uuid
 	dao *UserAccountFile
@@ -45,11 +49,13 @@ func NewCache(capacity int, filename string) *LruCache {
 	return &LruCache{
 		Capacity:   useCapacity,
 		linkedList: list.New(),
-		catalog:    make(map[string]*UserRecord, useCapacity), // size hint is default capacity
+		catalog:    make(map[string]*list.Element, useCapacity), // size hint is capacity
 		dao:        New(filename),
 	}
 }
 
+// Assumes record is not already in cache, which seems reasonable given that
+// the key is uuid. Consider adding lookup for safety.
 func (cache *LruCache) Add(uuid string, salt []byte, hashbytes []byte) {
 
 	if cache == nil {
@@ -62,11 +68,31 @@ func (cache *LruCache) Add(uuid string, salt []byte, hashbytes []byte) {
 	// Takes a write lock while mutating cache
 	cache.Lock()
 	defer cache.Unlock()
-	cache.catalog[uuid] = &UserRecord{uuid, salt, hashbytes}
 
+	r := UserRecord{uuid, salt, hashbytes}
+	element := cache.linkedList.PushFront(&r)
+	cache.catalog[uuid] = element
 	// Persist to disk so that eviction does not cause data loss
-	// TODO: check for errors
-	cache.dao.Append(cache.catalog[uuid])
+	// TODO: check result for errors
+	cache.dao.Append(r)
+	if cache.linkedList.Len() > cache.Capacity {
+		go cache.Evict()
+	}
+}
+
+// Purge the oldest entry
+func (cache *LruCache) Evict() {
+	if cache == nil {
+		return
+	}
+	cache.Lock()
+	defer cache.Unlock()
+	element := cache.linkedList.Back()
+	if element != nil {
+		uuid := element.Value.(*UserRecord).Uuid
+		delete(cache.catalog, uuid)
+		cache.linkedList.Remove(element)
+	}
 }
 
 func (cache *LruCache) Get(uuid string) (value *UserRecord, ok bool) {
@@ -76,10 +102,23 @@ func (cache *LruCache) Get(uuid string) (value *UserRecord, ok bool) {
 	}
 	log.Printf("getting record with uuid: %s\n", uuid)
 	cache.RLock()
-	defer cache.RUnlock()
-
-	if value, ok := cache.catalog[uuid]; ok {
-		return value, true
+	element, ok := cache.catalog[uuid]
+	cache.RUnlock()
+	if ok {
+		cache.Lock()
+		defer cache.Unlock()
+		cache.linkedList.MoveToFront(element)
+		if m, ok := element.Value.(*UserRecord); ok {
+			return m, true
+		}
+	} else {
+		// TODO: Seems expected that this should Add to cache
+		if b, ok := cache.dao.Get(uuid); ok {
+			var m UserRecord
+			if err := json.Unmarshal(b, &m); err == nil {
+				return &m, ok
+			}
+		}
 	}
 	return
 }

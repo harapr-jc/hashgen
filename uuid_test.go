@@ -47,7 +47,7 @@ func TestUuidLength(t *testing.T) {
 	}
 
 	if len(uuid) != 36 {
-		t.Error("Expected length 36, got %d", len(uuid))
+		t.Errorf("Expected length 36, got %d", len(uuid))
 	}
 
 	// Resulting bytes must all be printable
