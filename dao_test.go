@@ -9,16 +9,6 @@ import (
 	"time"
 )
 
-/*
-// Run 'go test -bench=".*"' to get an idea of how many UUID are generated per second.
-func BenchmarkUuidGen(b *testing.B) {
-
-    for i := 0; i < b.N; i++ {
-        _ = getUuid()
-    }
-}
-*/
-
 var userRecords = []UserRecord{
 
 	{"id1", []byte("1234"), []byte("cryptohash1")},

@@ -4,6 +4,7 @@ package hashgen
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -20,6 +21,9 @@ var testCases = []struct {
 
 func TestAddAndGet(t *testing.T) {
 
+	if _, err := os.Stat("cachetest1.json"); !os.IsNotExist(err) {
+		os.Remove("cachetest1.json")
+	}
 	cache := NewCache(0, "cachetest1.json")
 	if cache.Capacity != 1000 {
 		t.Fatalf("Expected capacity 1000, got %d", cache.Capacity)
@@ -51,6 +55,9 @@ func TestEvict(t *testing.T) {
 		UserRecord{"id5", []byte(""), []byte("hash5")},
 		UserRecord{"id6", []byte(""), []byte("hash6")},
 		UserRecord{"id7", []byte(""), []byte("hash7")},
+	}
+	if _, err := os.Stat("cachetest2.json"); !os.IsNotExist(err) {
+		os.Remove("cachetest2.json")
 	}
 	// Creates a cache with a small capacity
 	cache := NewCache(3, "cachetest2.json")

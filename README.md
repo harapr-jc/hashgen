@@ -36,12 +36,13 @@ $ go test -coverprofile=cover.out
 $ go tool cover -func=cover.out
 github.com/harapr-jc/hashgen/dao.go:24:		New			100.0%
 github.com/harapr-jc/hashgen/dao.go:29:		Append			71.4%
-github.com/harapr-jc/hashgen/dao.go:65:		Get			90.9%
+github.com/harapr-jc/hashgen/dao.go:65:		Get			100.0%
 github.com/harapr-jc/hashgen/hasher.go:15:	getSalt			80.0%
 github.com/harapr-jc/hashgen/hasher.go:26:	getCryptoHash		100.0%
-github.com/harapr-jc/hashgen/lru.go:39:		NewCache		100.0%
-github.com/harapr-jc/hashgen/lru.go:53:		Add			77.8%
-github.com/harapr-jc/hashgen/lru.go:72:		Get			87.5%
+github.com/harapr-jc/hashgen/lru.go:43:		NewCache		100.0%
+github.com/harapr-jc/hashgen/lru.go:59:		Add			84.6%
+github.com/harapr-jc/hashgen/lru.go:84:		Evict			88.9%
+github.com/harapr-jc/hashgen/lru.go:98:		Get			94.1%
 github.com/harapr-jc/hashgen/server.go:51:	HandleGetHashRequest	100.0%
 github.com/harapr-jc/hashgen/server.go:73:	HandleHashRequest	93.1%
 github.com/harapr-jc/hashgen/server.go:133:	HandleStatsRequest	100.0%
@@ -49,7 +50,7 @@ github.com/harapr-jc/hashgen/server.go:138:	StartServer		90.3%
 github.com/harapr-jc/hashgen/stats.go:38:	Accumulate		72.7%
 github.com/harapr-jc/hashgen/stats.go:59:	GetJson			85.7%
 github.com/harapr-jc/hashgen/uuid.go:11:	getUuid			75.0%
-total:						(statements)		86.8%
+total:						(statements)		88.4%
 ```
 
 ### Benchmarking
