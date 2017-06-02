@@ -29,6 +29,7 @@ func TestAccumulate(t *testing.T) {
 	if count != 20 {
 		t.Errorf("Expected count = %d, actual = %d", 20, count)
 	}
+	// TODO: c'mon, you know this does not work for compare
 	if elapsed < float64(1) {
 		t.Errorf("Expected elapsed greater than 2.0, actual = %f", elapsed)
 	}
