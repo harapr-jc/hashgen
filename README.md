@@ -84,4 +84,6 @@ store instead. The Go standard library has sql API, but no database drivers are 
 ## Outstanding Development Items
 
 * Raise code coverage
+* Consider API version scheme
+* Consider implementing password policies
 * Add safety for when backing file size approaches partition size
